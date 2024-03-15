@@ -29,11 +29,10 @@ exports.register = async (request, response) => {
 exports.editIndex = async (request, response) => {
     if(!request.params.id) return response.render('404');
 
-    const contact = new Contact(request.body);
-    const contactSelect = await contact.searchId(request.params.id);
+    const contact = await Contact.searchId(request.params.id);
     if(!contact) return response.render('404');
 
-    response.render('contact', { contact: contactSelect });
+    response.render('contact', { contact });
 };
 
 exports.edit = async (request, response) => {
@@ -55,4 +54,15 @@ exports.edit = async (request, response) => {
         console.log(e);
         response.render('404');
     }
+};
+
+exports.delete = async (request, response) => {
+    if(!request.params.id) return response.render('404');
+
+    const contact = await Contact.delete(request.params.id);
+    if(!contact) return response.render('404');
+
+    request.flash('success', 'Contact deleted sucessfully.');
+    request.session.save(() => response.redirect('/'));
+    return;
 };

@@ -42,7 +42,7 @@ exports.signin = async (request, response) => {
             return;
         }
 
-        request.flash('sucess', 'Logged in successfully.');
+        request.flash('success', 'Logged in successfully.');
         request.session.user = login.user;
         request.session.save(() => {
             return response.redirect('/login/index');

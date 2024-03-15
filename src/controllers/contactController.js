@@ -35,3 +35,24 @@ exports.editIndex = async (request, response) => {
 
     response.render('contact', { contact: contactSelect });
 };
+
+exports.edit = async (request, response) => {
+    try {
+        if(!request.params.id) return response.render('404');
+        const contact = new Contact(request.body);
+        await contact.edit(request.params.id);
+    
+        if(contact.errors.length > 0) {
+            request.flash('errors', contact.errors);
+            request.session.save(() => response.redirect(`/contact/index/${request.params.id}`));
+            return;
+        }
+    
+        request.flash('success', 'Contact edited successfully.');
+        request.session.save(() => response.redirect(`/contact/index/${request.params.id}`));
+        return;
+    } catch(e) {
+        console.log(e);
+        response.render('404');
+    }
+};
